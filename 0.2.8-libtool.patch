@@ -1,0 +1,218 @@
+--- origsrc/blop-0.2.8/configure.in	2004-06-13 10:20:36.000000000 -0500
++++ src/blop-0.2.8/configure.in	2008-10-23 23:20:06.553816400 -0500
+@@ -35,6 +35,9 @@
+ dnl Automake
+ dnl !!!! Remember to update version !!!!
+ AM_INIT_AUTOMAKE(blop, 0.2.8)
++AC_DISABLE_STATIC
++AC_PROG_CC
++AC_PROG_LIBTOOL
+ 
+ dnl This is required to prevent time stamp problems with auto builders,
+ dnl such as dpkg (debian)
+@@ -42,6 +45,7 @@
+ 
+ dnl Trigger internationalization support
+ AM_GNU_GETTEXT([external])
++AM_GNU_GETTEXT_VERSION([0.17])
+ 
+ 
+ dnl Supported --enable and --with options
+@@ -52,7 +56,7 @@
+    debug,
+    [  --enable-debug          Enable debugging [no]],
+    [CFLAGS="-pipe -Wall -O0 -g"],
+-   [CFLAGS="-pipe -Wall -O3 -Wno-unused -DNO_DEBUG -DPIC -fPIC \
++   [CFLAGS="-pipe -Wall -O3 -Wno-unused -DNO_DEBUG \
+             -ffast-math -fomit-frame-pointer -funroll-loops"]
+ )
+ 
+--- origsrc/blop-0.2.8/src/Makefile.am	2004-06-15 04:05:31.000000000 -0500
++++ src/blop-0.2.8/src/Makefile.am	2008-10-23 23:27:31.631941400 -0500
+@@ -1,31 +1,31 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+ SUBDIRS = include
+-AM_CPPFLAGS = -I$(ladspa_prefix)/include -Iinclude -I. \
++AM_CPPFLAGS = -I$(ladspa_prefix)/include -I$(srcdir)/include -I. \
+               -DLOCALEDIR=\"$(datadir)/locale\"
+-LINK = $(COMPILE) -nostartfiles -shared -lc -o $@
++AM_LDFLAGS = -module -avoid-version -no-undefined -shrext .so $(LTLIBINTL)
+ CLEANFILES = parabola_1649_data.so.c \
+              sawtooth_1641_data.so.c \
+              square_1643_data.so.c
+ MAINTAINERCLEANFILES = Makefile.in
+ 
+ ## These are really libs, eh? I have yet to try libtool.
+-pkgbin_PROGRAMS = adsr_1653.so adsr_1680.so amp_1654.so branch_1673.so \
+-                  dahdsr_2021.so difference_2030.so fmod_1656.so \
+-                  interpolator_1660.so lp4pole_1671.so \
+-                  product_1668.so pulse_1645.so quantiser20_2027.so \
+-                  quantiser50_2028.so quantiser100_2029.so random_1661.so \
+-                  ratio_2034.so sawtooth_1641.so sequencer64_1675.so \
+-                  sequencer32_1676.so sequencer16_1677.so square_1643.so \
+-                  sum_1665.so sync_pulse_2023.so sync_square_1678.so \
+-                  tracker_2025.so triangle_1649.so
+-
+-wavedata_PROGRAMS = sawtooth_1641_data.so \
+-                    square_1643_data.so \
+-                    parabola_1649_data.so
+-nodist_sawtooth_1641_data_so_SOURCES = sawtooth_1641_data.so.c
+-nodist_square_1643_data_so_SOURCES = square_1643_data.so.c
+-nodist_parabola_1649_data_so_SOURCES = parabola_1649_data.so.c
++pkgbin_LTLIBRARIES = adsr_1653.la adsr_1680.la amp_1654.la branch_1673.la \
++                  dahdsr_2021.la difference_2030.la fmod_1656.la \
++                  interpolator_1660.la lp4pole_1671.la \
++                  product_1668.la pulse_1645.la quantiser20_2027.la \
++                  quantiser50_2028.la quantiser100_2029.la random_1661.la \
++                  ratio_2034.la sawtooth_1641.la sequencer64_1675.la \
++                  sequencer32_1676.la sequencer16_1677.la square_1643.la \
++                  sum_1665.la sync_pulse_2023.la sync_square_1678.la \
++                  tracker_2025.la triangle_1649.la
++
++wavedata_LTLIBRARIES = sawtooth_1641_data.la \
++                    square_1643_data.la \
++                    parabola_1649_data.la
++nodist_sawtooth_1641_data_la_SOURCES = sawtooth_1641_data.so.c
++nodist_square_1643_data_la_SOURCES = square_1643_data.so.c
++nodist_parabola_1649_data_la_SOURCES = parabola_1649_data.so.c
+ 
+ pkgbindir = $(ladspa_plugin_dir)
+ wavedatadir = $(ladspa_plugin_dir)/$(wavedata_subdir)
+@@ -33,79 +33,80 @@
+ noinst_PROGRAMS = wavegen
+ wavegen_SOURCES = wavegen.c wdatutil.c
+ wavegen_DEPENDENCIES = include/wdatutil.h include/common.h
+-wavegen_LINK = $(COMPILE) -lc -lm -o $@
++wavegen_LINK = $(COMPILE) -o $@
+ 
+ ## Need to specify sources so that make dist will include them
+-lp4pole_1671_so_SOURCES = lp4pole_1671.so.c lp4pole_filter.c
+-pulse_1645_so_SOURCES = pulse_1645.so.c wavedata.c
+-quantiser20_2027_so_SOURCES = quantiser.so.c
+-quantiser50_2028_so_SOURCES = quantiser.so.c
+-quantiser100_2029_so_SOURCES = quantiser.so.c
+-sawtooth_1641_so_SOURCES = sawtooth_1641.so.c wavedata.c
+-sequencer64_1675_so_SOURCES = sequencer.so.c
+-sequencer32_1676_so_SOURCES = sequencer.so.c
+-sequencer16_1677_so_SOURCES = sequencer.so.c
+-square_1643_so_SOURCES = square_1643.so.c wavedata.c
+-triangle_1649_so_SOURCES = triangle_1649.so.c wavedata.c
+-
+-adsr_1653_so_DEPENDENCIES = include/common.h
+-adsr_1680_so_DEPENDENCIES = include/common.h
+-amp_1654_so_DEPENDENCIES = include/math_func.h
+-dahdsr_2021_so_DEPENDENCIES = include/common.h
+-fmod_1656_so_DEPENDENCIES = include/math_func.h
+-lp4pole_1671_so_DEPENDENCIES = include/lp4pole_filter.h include/common.h
+-pulse_1645_so_DEPENDENCIES = include/wavedata.h
+-quantiser20_2027_so_DEPENDENCIES = include/common.h include/math_func.h
+-quantiser50_2028_so_DEPENDENCIES = include/common.h include/math_func.h
+-quantiser100_2029_so_DEPENDENCIES = include/common.h include/math_func.h
+-random_1661_so_DEPENDENCIES = include/common.h include/math_func.h
+-ratio_2034_so_DEPENDENCIES = include/common.h include/math_func.h
+-sawtooth_1641_so_DEPENDENCIES = include/wavedata.h
+-sequencer16_1677_so_DEPENDENCIES = include/common.h include/math_func.h
+-sequencer32_1676_so_DEPENDENCIES = include/common.h include/math_func.h
+-sequencer64_1675_so_DEPENDENCIES = include/common.h include/math_func.h
+-square_1643_so_DEPENDENCIES = include/wavedata.h
+-sync_pulse_2023_so_DEPENDENCIES = include/common.h
+-tracker_2025_so_DEPENDENCIES = include/common.h
+-triangle_1649_so_DEPENDENCIES = include/wavedata.h
+-
+-clean:
+-	rm -f *.so *.so.o
++adsr_1653_la_SOURCES = adsr_1653.so.c
++adsr_1680_la_SOURCES = adsr_1680.so.c
++amp_1654_la_SOURCES = amp_1654.so.c
++branch_1673_la_SOURCES = branch_1673.so.c
++dahdsr_2021_la_SOURCES = dahdsr_2021.so.c
++difference_2030_la_SOURCES = difference_2030.so.c
++fmod_1656_la_SOURCES = fmod_1656.so.c
++interpolator_1660_la_SOURCES = interpolator_1660.so.c
++lp4pole_1671_la_SOURCES = lp4pole_1671.so.c lp4pole_filter.c
++product_1668_la_SOURCES = product_1668.so.c
++pulse_1645_la_SOURCES = pulse_1645.so.c wavedata.c
++quantiser20_2027_la_SOURCES = quantiser.so.c
++quantiser50_2028_la_SOURCES = quantiser.so.c
++quantiser100_2029_la_SOURCES = quantiser.so.c
++random_1661_la_SOURCES = random_1661.so.c
++ratio_2034_la_SOURCES = ratio_2034.so.c
++sawtooth_1641_la_SOURCES = sawtooth_1641.so.c wavedata.c
++sequencer64_1675_la_SOURCES = sequencer.so.c
++sequencer32_1676_la_SOURCES = sequencer.so.c
++sequencer16_1677_la_SOURCES = sequencer.so.c
++square_1643_la_SOURCES = square_1643.so.c wavedata.c
++sum_1665_la_SOURCES = sum_1665.so.c
++sync_pulse_2023_la_SOURCES = sync_pulse_2023.so.c
++sync_square_1678_la_SOURCES = sync_square_1678.so.c
++tracker_2025_la_SOURCES = tracker_2025.so.c
++triangle_1649_la_SOURCES = triangle_1649.so.c wavedata.c
++
++adsr_1653_la_DEPENDENCIES = include/common.h
++adsr_1680_la_DEPENDENCIES = include/common.h
++amp_1654_la_DEPENDENCIES = include/math_func.h
++dahdsr_2021_la_DEPENDENCIES = include/common.h
++fmod_1656_la_DEPENDENCIES = include/math_func.h
++lp4pole_1671_la_DEPENDENCIES = include/lp4pole_filter.h include/common.h
++pulse_1645_la_DEPENDENCIES = include/wavedata.h
++quantiser20_2027_la_DEPENDENCIES = include/common.h include/math_func.h
++quantiser50_2028_la_DEPENDENCIES = include/common.h include/math_func.h
++quantiser100_2029_la_DEPENDENCIES = include/common.h include/math_func.h
++random_1661_la_DEPENDENCIES = include/common.h include/math_func.h
++ratio_2034_la_DEPENDENCIES = include/common.h include/math_func.h
++sawtooth_1641_la_DEPENDENCIES = include/wavedata.h
++sequencer16_1677_la_DEPENDENCIES = include/common.h include/math_func.h
++sequencer32_1676_la_DEPENDENCIES = include/common.h include/math_func.h
++sequencer64_1675_la_DEPENDENCIES = include/common.h include/math_func.h
++square_1643_la_DEPENDENCIES = include/wavedata.h
++sync_pulse_2023_la_DEPENDENCIES = include/common.h
++tracker_2025_la_DEPENDENCIES = include/common.h
++triangle_1649_la_DEPENDENCIES = include/wavedata.h
+ 
+ wavedata.o: wavedata.c include/wavedata.h include/interpolate.h \
+                        include/math_func.h include/common.h
+ 	$(COMPILE) -DWAVEDATA_SUBDIR=\"$(wavedata_subdir)\" -c wavedata.c
+ 
+-sequencer64_1675.so$(EXEEXT): sequencer.so.c
+-	$(LINK) -DSEQUENCER_MAX_INPUTS=64 -DSEQUENCER_BASE_ID=1675 sequencer.so.c
+-
+-sequencer32_1676.so$(EXEEXT): sequencer.so.c
+-	$(LINK) -DSEQUENCER_MAX_INPUTS=32 -DSEQUENCER_BASE_ID=1676 sequencer.so.c
+-
+-sequencer16_1677.so$(EXEEXT): sequencer.so.c
+-	$(LINK) -DSEQUENCER_MAX_INPUTS=16 -DSEQUENCER_BASE_ID=1677 sequencer.so.c
+-
++sequencer64_1675_la_CFLAGS = -DSEQUENCER_MAX_INPUTS=64 -DSEQUENCER_BASE_ID=1675
++sequencer32_1676_la_CFLAGS = -DSEQUENCER_MAX_INPUTS=32 -DSEQUENCER_BASE_ID=1676
++sequencer16_1677_la_CFLAGS = -DSEQUENCER_MAX_INPUTS=16 -DSEQUENCER_BASE_ID=1677
+ ## Remove optimisation, as -O1 or greater will cause quantiser to fail. I Don't Know Why.
+-quantiser20_2027.so$(EXEEXT): quantiser.so.c
+-	$(LINK) -O0 -DQUANTISER_MAX_INPUTS=20 -DQUANTISER_BASE_ID=2027 -lm quantiser.so.c
+-
+-quantiser50_2028.so$(EXEEXT): quantiser.so.c
+-	$(LINK) -O0 -DQUANTISER_MAX_INPUTS=50 -DQUANTISER_BASE_ID=2028 -lm quantiser.so.c
+-
+-quantiser100_2029.so$(EXEEXT): quantiser.so.c
+-	$(LINK) -O0 -DQUANTISER_MAX_INPUTS=100 -DQUANTISER_BASE_ID=2029 -lm quantiser.so.c
++quantiser20_2027_la_CFLAGS = -O0 -DQUANTISER_MAX_INPUTS=20 -DQUANTISER_BASE_ID=2027
++quantiser50_2028_la_CFLAGS = -O0 -DQUANTISER_MAX_INPUTS=50 -DQUANTISER_BASE_ID=2028
++quantiser100_2029_la_CFLAGS = -O0 -DQUANTISER_MAX_INPUTS=100 -DQUANTISER_BASE_ID=2029
+ 
+-parabola_1649_data.so.c: wavegen
++parabola_1649_data.so.c: wavegen$(EXEEXT)
+ 	./wavegen -r $(sample_rate) -f $(first_note) -s $(note_step) \
+           -m $(min_table_size) -g $(gibbs) \
+           -w parabola -p parabola -o parabola_1649_data.so.c
+ 
+-sawtooth_1641_data.so.c: wavegen
++sawtooth_1641_data.so.c: wavegen$(EXEEXT)
+ 	./wavegen -r $(sample_rate) -f $(first_note) -s $(note_step) \
+           -m $(min_table_size) -g $(gibbs) \
+           -w saw -p sawtooth -o sawtooth_1641_data.so.c
+ 
+-square_1643_data.so.c: wavegen
++square_1643_data.so.c: wavegen$(EXEEXT)
+ 	./wavegen -r $(sample_rate) -f $(first_note) -s $(note_step) \
+           -m $(min_table_size) -g $(gibbs) \
+           -w square -p square -o square_1643_data.so.c

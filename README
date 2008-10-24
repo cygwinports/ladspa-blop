@@ -1,0 +1,128 @@
+ladspa-blop
+------------------------------------------
+BLOP comprises a set of LADSPA plugins that generate bandlimited 
+sawtooth, square, variable pulse and slope-variable triangle waves, 
+principally for use with one of the many modular software synthesisers 
+available. They are wavetable based, and are designed to produce output 
+with harmonic content as high as possible over a wide pitch range.
+
+Runtime requirements:
+  cygwin-1.5.25-15
+  ladspa-sdk-1.13-1
+  libintl8-0.17-1
+
+Build requirements:
+(besides corresponding -devel packages)
+  autoconf2.5-2.63-1
+  automake1.9-1.9.6-2
+  binutils-20080624-2
+  cygport-0.4.1-1
+  gawk-3.1.6-1
+  gcc-core-3.4.4-3
+  libtool-2.2.6a-1
+  make-3.81-1
+  sed-4.1.5-2
+
+Canonical website:
+  http://blop.sourceforge.net/
+
+Canonical download:
+  http://downloads.sourceforge.net/blop/
+
+-------------------------------------------
+
+Build instructions:
+  unpack ladspa-blop-0.2.8-X-src.tar.bz2
+    if you use setup to install this src package, it will be
+	 unpacked under /usr/src automatically
+  cd /usr/src
+  cygport ./ladspa-blop-0.2.8-X.cygport all
+
+This will create:
+  /usr/src/ladspa-blop-0.2.8-X-src.tar.bz2
+  /usr/src/ladspa-blop-0.2.8-X.tar.bz2
+
+-------------------------------------------
+
+Files included in the binary package:
+
+  /usr/lib/ladspa/adsr_1653.la
+  /usr/lib/ladspa/adsr_1653.so
+  /usr/lib/ladspa/adsr_1680.la
+  /usr/lib/ladspa/adsr_1680.so
+  /usr/lib/ladspa/amp_1654.la
+  /usr/lib/ladspa/amp_1654.so
+  /usr/lib/ladspa/blop_files/parabola_1649_data.la
+  /usr/lib/ladspa/blop_files/parabola_1649_data.so
+  /usr/lib/ladspa/blop_files/sawtooth_1641_data.la
+  /usr/lib/ladspa/blop_files/sawtooth_1641_data.so
+  /usr/lib/ladspa/blop_files/square_1643_data.la
+  /usr/lib/ladspa/blop_files/square_1643_data.so
+  /usr/lib/ladspa/branch_1673.la
+  /usr/lib/ladspa/branch_1673.so
+  /usr/lib/ladspa/dahdsr_2021.la
+  /usr/lib/ladspa/dahdsr_2021.so
+  /usr/lib/ladspa/difference_2030.la
+  /usr/lib/ladspa/difference_2030.so
+  /usr/lib/ladspa/fmod_1656.la
+  /usr/lib/ladspa/fmod_1656.so
+  /usr/lib/ladspa/interpolator_1660.la
+  /usr/lib/ladspa/interpolator_1660.so
+  /usr/lib/ladspa/lp4pole_1671.la
+  /usr/lib/ladspa/lp4pole_1671.so
+  /usr/lib/ladspa/product_1668.la
+  /usr/lib/ladspa/product_1668.so
+  /usr/lib/ladspa/pulse_1645.la
+  /usr/lib/ladspa/pulse_1645.so
+  /usr/lib/ladspa/quantiser100_2029.la
+  /usr/lib/ladspa/quantiser100_2029.so
+  /usr/lib/ladspa/quantiser20_2027.la
+  /usr/lib/ladspa/quantiser20_2027.so
+  /usr/lib/ladspa/quantiser50_2028.la
+  /usr/lib/ladspa/quantiser50_2028.so
+  /usr/lib/ladspa/random_1661.la
+  /usr/lib/ladspa/random_1661.so
+  /usr/lib/ladspa/ratio_2034.la
+  /usr/lib/ladspa/ratio_2034.so
+  /usr/lib/ladspa/sawtooth_1641.la
+  /usr/lib/ladspa/sawtooth_1641.so
+  /usr/lib/ladspa/sequencer16_1677.la
+  /usr/lib/ladspa/sequencer16_1677.so
+  /usr/lib/ladspa/sequencer32_1676.la
+  /usr/lib/ladspa/sequencer32_1676.so
+  /usr/lib/ladspa/sequencer64_1675.la
+  /usr/lib/ladspa/sequencer64_1675.so
+  /usr/lib/ladspa/square_1643.la
+  /usr/lib/ladspa/square_1643.so
+  /usr/lib/ladspa/sum_1665.la
+  /usr/lib/ladspa/sum_1665.so
+  /usr/lib/ladspa/sync_pulse_2023.la
+  /usr/lib/ladspa/sync_pulse_2023.so
+  /usr/lib/ladspa/sync_square_1678.la
+  /usr/lib/ladspa/sync_square_1678.so
+  /usr/lib/ladspa/tracker_2025.la
+  /usr/lib/ladspa/tracker_2025.so
+  /usr/lib/ladspa/triangle_1649.la
+  /usr/lib/ladspa/triangle_1649.so
+  /usr/share/doc/ladspa-blop-0.2.8/ABOUT-NLS
+  /usr/share/doc/ladspa-blop-0.2.8/AUTHORS
+  /usr/share/doc/ladspa-blop-0.2.8/COPYING
+  /usr/share/doc/ladspa-blop-0.2.8/ChangeLog
+  /usr/share/doc/ladspa-blop-0.2.8/INSTALL
+  /usr/share/doc/ladspa-blop-0.2.8/NEWS
+  /usr/share/doc/ladspa-blop-0.2.8/README
+  /usr/share/doc/ladspa-blop-0.2.8/THANKS
+  /usr/share/doc/ladspa-blop-0.2.8/TODO
+  /usr/share/locale/de/LC_MESSAGES/blop.mo
+  /usr/share/locale/en_GB/LC_MESSAGES/blop.mo
+
+------------------
+
+Port Notes:
+
+----- version 0.2.8-1 -----
+Initial release for Cygwin.
+
+
+Cygwin port maintained by:
+http://sourceware.org/cygwinports/
