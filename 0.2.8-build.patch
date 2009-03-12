@@ -1,0 +1,95 @@
+--- origsrc/blop-0.2.8/configure.in	2004-06-13 10:20:36.000000000 -0500
++++ src/blop-0.2.8/configure.in	2009-03-09 16:01:06.968750000 -0500
+@@ -52,7 +52,7 @@ AC_ARG_ENABLE(
+    debug,
+    [  --enable-debug          Enable debugging [no]],
+    [CFLAGS="-pipe -Wall -O0 -g"],
+-   [CFLAGS="-pipe -Wall -O3 -Wno-unused -DNO_DEBUG -DPIC -fPIC \
++   [CFLAGS="-pipe -Wall -O3 -Wno-unused -DNO_DEBUG -DPIC \
+             -ffast-math -fomit-frame-pointer -funroll-loops"]
+ )
+ 
+--- origsrc/blop-0.2.8/src/Makefile.am	2004-06-15 04:05:31.000000000 -0500
++++ src/blop-0.2.8/src/Makefile.am	2009-03-09 16:21:34.312500000 -0500
+@@ -1,9 +1,9 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+ SUBDIRS = include
+-AM_CPPFLAGS = -I$(ladspa_prefix)/include -Iinclude -I. \
++AM_CPPFLAGS = -I$(ladspa_prefix)/include -I$(srcdir)/include \
+               -DLOCALEDIR=\"$(datadir)/locale\"
+-LINK = $(COMPILE) -nostartfiles -shared -lc -o $@
++LINK = $(COMPILE) -nostartfiles -shared -o $@
+ CLEANFILES = parabola_1649_data.so.c \
+              sawtooth_1641_data.so.c \
+              square_1643_data.so.c
+@@ -33,19 +33,34 @@ wavedatadir = $(ladspa_plugin_dir)/$(wav
+ noinst_PROGRAMS = wavegen
+ wavegen_SOURCES = wavegen.c wdatutil.c
+ wavegen_DEPENDENCIES = include/wdatutil.h include/common.h
+-wavegen_LINK = $(COMPILE) -lc -lm -o $@
++wavegen_LINK = $(COMPILE) -o $@
+ 
+ ## Need to specify sources so that make dist will include them
++adsr_1653_so_SOURCES = adsr_1653.so.c
++adsr_1680_so_SOURCES = adsr_1680.so.c
++amp_1654_so_SOURCES = amp_1654.so.c
++branch_1673_so_SOURCES = branch_1673.so.c
++dahdsr_2021_so_SOURCES = dahdsr_2021.so.c
++difference_2030_so_SOURCES = difference_2030.so.c
++fmod_1656_so_SOURCES = fmod_1656.so.c
++interpolator_1660_so_SOURCES = interpolator_1660.so.c
+ lp4pole_1671_so_SOURCES = lp4pole_1671.so.c lp4pole_filter.c
++product_1668_so_SOURCES = product_1668.so.c
+ pulse_1645_so_SOURCES = pulse_1645.so.c wavedata.c
+ quantiser20_2027_so_SOURCES = quantiser.so.c
+ quantiser50_2028_so_SOURCES = quantiser.so.c
+ quantiser100_2029_so_SOURCES = quantiser.so.c
++random_1661_so_SOURCES = random_1661.so.c
++ratio_2034_so_SOURCES = ratio_2034.so.c
+ sawtooth_1641_so_SOURCES = sawtooth_1641.so.c wavedata.c
+ sequencer64_1675_so_SOURCES = sequencer.so.c
+ sequencer32_1676_so_SOURCES = sequencer.so.c
+ sequencer16_1677_so_SOURCES = sequencer.so.c
+ square_1643_so_SOURCES = square_1643.so.c wavedata.c
++sum_1665_so_SOURCES = sum_1665.so.c
++sync_pulse_2023_so_SOURCES = sync_pulse_2023.so.c
++sync_square_1678_so_SOURCES = sync_square_1678.so.c
++tracker_2025_so_SOURCES = tracker_2025.so.c
+ triangle_1649_so_SOURCES = triangle_1649.so.c wavedata.c
+ 
+ adsr_1653_so_DEPENDENCIES = include/common.h
+@@ -74,26 +89,26 @@ clean:
+ 
+ wavedata.o: wavedata.c include/wavedata.h include/interpolate.h \
+                        include/math_func.h include/common.h
+-	$(COMPILE) -DWAVEDATA_SUBDIR=\"$(wavedata_subdir)\" -c wavedata.c
++	$(COMPILE) -DWAVEDATA_SUBDIR=\"$(wavedata_subdir)\" -c $<
+ 
+ sequencer64_1675.so$(EXEEXT): sequencer.so.c
+-	$(LINK) -DSEQUENCER_MAX_INPUTS=64 -DSEQUENCER_BASE_ID=1675 sequencer.so.c
++	$(LINK) -DSEQUENCER_MAX_INPUTS=64 -DSEQUENCER_BASE_ID=1675 $< $(LIBS)
+ 
+ sequencer32_1676.so$(EXEEXT): sequencer.so.c
+-	$(LINK) -DSEQUENCER_MAX_INPUTS=32 -DSEQUENCER_BASE_ID=1676 sequencer.so.c
++	$(LINK) -DSEQUENCER_MAX_INPUTS=32 -DSEQUENCER_BASE_ID=1676 $< $(LIBS)
+ 
+ sequencer16_1677.so$(EXEEXT): sequencer.so.c
+-	$(LINK) -DSEQUENCER_MAX_INPUTS=16 -DSEQUENCER_BASE_ID=1677 sequencer.so.c
++	$(LINK) -DSEQUENCER_MAX_INPUTS=16 -DSEQUENCER_BASE_ID=1677 $< $(LIBS)
+ 
+ ## Remove optimisation, as -O1 or greater will cause quantiser to fail. I Don't Know Why.
+ quantiser20_2027.so$(EXEEXT): quantiser.so.c
+-	$(LINK) -O0 -DQUANTISER_MAX_INPUTS=20 -DQUANTISER_BASE_ID=2027 -lm quantiser.so.c
++	$(LINK) -O0 -DQUANTISER_MAX_INPUTS=20 -DQUANTISER_BASE_ID=2027 $< -lm $(LIBS)
+ 
+ quantiser50_2028.so$(EXEEXT): quantiser.so.c
+-	$(LINK) -O0 -DQUANTISER_MAX_INPUTS=50 -DQUANTISER_BASE_ID=2028 -lm quantiser.so.c
++	$(LINK) -O0 -DQUANTISER_MAX_INPUTS=50 -DQUANTISER_BASE_ID=2028 $< -lm $(LIBS)
+ 
+ quantiser100_2029.so$(EXEEXT): quantiser.so.c
+-	$(LINK) -O0 -DQUANTISER_MAX_INPUTS=100 -DQUANTISER_BASE_ID=2029 -lm quantiser.so.c
++	$(LINK) -O0 -DQUANTISER_MAX_INPUTS=100 -DQUANTISER_BASE_ID=2029 $< -lm $(LIBS)
+ 
+ parabola_1649_data.so.c: wavegen
+ 	./wavegen -r $(sample_rate) -f $(first_note) -s $(note_step) \
