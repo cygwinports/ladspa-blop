@@ -1,5 +1,5 @@
 category: Audio
-requires: cygwin ladspa-sdk libintl8
+requires: ladspa-sdk libintl8
 sdesc: "Bandlimited LADSPA Oscillator Plugins"
 ldesc: "BLOP comprises a set of LADSPA plugins that generate bandlimited
 sawtooth, square, variable pulse and slope-variable triangle waves,
