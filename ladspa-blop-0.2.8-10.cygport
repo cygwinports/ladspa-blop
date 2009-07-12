@@ -10,4 +10,15 @@ DIFF_EXCLUDES="m4 po"
 # ships with 1.5; 1.8 required for gettext-0.17
 WANT_AUTOMAKE=1.9
 
-MAKEOPTS+=" EXEEXT=  LIBS=\$(LTLIBINTL)"
+# needed for both compile and install
+MAKEOPTS+=" EXEEXT= "
+
+src_compile() {
+	cd ${S}
+	cygautoreconf
+	cd ${B}
+	cygconf
+	# package overrides CFLAGS, but wavegen segfaults when compiled
+	# with gcc-4.3 and -ffast-math
+	cygmake CFLAGS="${CFLAGS}" LIBS="\$(LTLIBINTL)"
+}

@@ -19,7 +19,7 @@
 +AM_CPPFLAGS = -I$(ladspa_prefix)/include -I$(srcdir)/include \
                -DLOCALEDIR=\"$(datadir)/locale\"
 -LINK = $(COMPILE) -nostartfiles -shared -lc -o $@
-+LINK = $(COMPILE) -nostartfiles -shared -o $@
++LINK = $(COMPILE) -shared -o $@
  CLEANFILES = parabola_1649_data.so.c \
               sawtooth_1641_data.so.c \
               square_1643_data.so.c
