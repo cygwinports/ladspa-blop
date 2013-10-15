@@ -1,8 +1,0 @@
-category: Audio
-requires: libgcc1 libintl8
-sdesc: "Bandlimited LADSPA Oscillator Plugins"
-ldesc: "BLOP comprises a set of LADSPA plugins that generate bandlimited
-sawtooth, square, variable pulse and slope-variable triangle waves,
-principally for use with one of the many modular software synthesisers
-available. They are wavetable based, and are designed to produce output
-with harmonic content as high as possible over a wide pitch range."

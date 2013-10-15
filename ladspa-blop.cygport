@@ -1,0 +1,31 @@
+NAME="ladspa-blop"
+VERSION=0.2.8
+RELEASE=10
+CATEGORY="Audio"
+SUMMARY="Bandlimited LADSPA Oscillator Plugins"
+DESCRIPTION="BLOP comprises a set of LADSPA plugins that generate bandlimited
+sawtooth, square, variable pulse and slope-variable triangle waves, principally
+for use with one of the many modular software synthesisers available. They are
+wavetable based, and are designed to produce output with harmonic content as
+high as possible over a wide pitch range."
+HOMEPAGE="http://blop.sourceforge.net/"
+SRC_URI="mirror://sourceforge/blop/blop-${PV}.tar.gz"
+SRC_DIR="blop-${VERSION}"
+PATCH_URI="0.2.8-build.patch"
+
+#DIFF_EXCLUDES="m4 po"
+
+WANT_AUTOMAKE=1.9
+
+# needed for both compile and install
+MAKEOPTS+=" EXEEXT= "
+
+src_compile() {
+	cd ${S}
+	cygautoreconf
+	cd ${B}
+	cygconf
+	# package overrides CFLAGS, but wavegen segfaults when compiled
+	# with gcc-4.3 and -ffast-math
+	cygmake CFLAGS="${CFLAGS}" LIBS="\$(LTLIBINTL)"
+}
